@@ -17,7 +17,7 @@
             font-size: 50px;
             margin: 0;
         }
-        .div1{
+        .reselect-section{
             display: flex;
             justify-content: space-between;
             margin: 0 50px;
@@ -36,6 +36,7 @@
             justify-content: space-evenly;
             padding: 0;
             margin: 3px 0;
+            cursor: pointer;
         }
         li{
             border: 3px solid #F7AF9D;
@@ -48,8 +49,9 @@
             color: #F7AF9D;
             text-align: center;
             background-color: #FFF;
+
         }
-        .div2{
+        .result-section{
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -59,25 +61,25 @@
             color: #FFF;
             background-color: #FFAB96;
             padding: 10px;
-            border: 3px solid #F7AF9D;
+            border: 3px solid #FFAB96;
             border-radius: 20px;
             font-size: 20px;
         }
-        .div3{
+        .reveal-section{
             display: flex;
             justify-content: center;
             align-items: center;
         }
-        .div5{
+        .result-msg{
             width: fit-content;
             margin: 10px;
             text-align: center;
             font-size: 20px;
         }
-        .div4{
+        .reveal-nums{
             border: 1px solid #777;
             height: 40px;
-            width: 300px;
+            width: 400px;
             margin: 10px;
             text-align: center;
             font-size: 30px;
@@ -97,12 +99,6 @@
         $(function () {
             let numsArr = [];
 
-            // 重新點選
-            $('.reselect').click(function(){
-                $('li').removeClass('clicked');
-                numsArr.length = 0;
-            })
-
             // 玩家click數字，數字反黑
             // 將號碼放入陣列中
             $('li').click(function(){
@@ -113,23 +109,34 @@
                     numsArr.pop();
                 }else{
                     $(this).addClass('clicked');
-                    numsArr.push(nums);
+                    numsArr.push(nums);   
                 } 
             });
-                  
-            // 莊家數字
+            
+            
+            // 重新點選
             let ansArr = [];
-            while(ansArr.length < 6){
-                let n = (Math.floor(Math.random()*49))+1
-                if(ansArr.includes(n)){
-                    return false;
-                }else{
-                    ansArr.push(n);
-                }
-            };
+            $('.reselect').click(function(){
+                $('li').removeClass('clicked');
+                numsArr.length = 0;
+                ansArr.length = 0;
+                correctArr.length = 0;
+                ans();
+                $('.result-msg').text(``)
+                $('.reveal-nums').text(``)
+            })
+            
+            // 莊家數字
+            function ans(){
+                while(ansArr.length < 6){
+                    let n = (Math.floor(Math.random()*49))+1
+                    if(!ansArr.includes(n)){
+                        ansArr.push(n);
+                    }
+                };
+            }
 
             // 限制選擇6個號碼
-            // 重複執行ＸＸ
             let correctArr = [];
             $('.result').click(function(e){
                 if(numsArr.length > 6){
@@ -137,8 +144,8 @@
                 }else if(numsArr.length < 6){
                     alert(`Please choose 6 numbers!`);
                 }else{
-                    // 排版ＸＸ
-                    $('.div4').append(ansArr.sort(
+                    ans();
+                    $('.reveal-nums').text(ansArr.sort(
                         function(a, b) {
                             return a - b;
                         }
@@ -146,33 +153,33 @@
                     // 找出莊家與玩家相同數字
                     $.each(numsArr, function(i,val){
                         if(ansArr.includes(val)){
-                            correctArr.push(val);
-                            // console.log(val);  
+                            correctArr.push(val); 
                         }
+                    // console.log(`玩家數字 ${numsArr}`);
+                    // console.log(`莊家數字：${ansArr}`); 
+                    // console.log(`相同數字：${correctArr}`); 
+
                     });
                     // 中獎結果
-                    if(ansArr.includes(numsArr)){
-                        $('.div5').append(
-                            `Congratulation! You got ${correctArr.length} number(s): ${correctArr}`
+                    if(correctArr.length == 0){
+                        $('.result-msg').text(
+                            `Sorry! We could try it again.`
                         );
                     }else{
-                        $('.div5').append(
-                            `Sorry! We could try it again.`
+                        $('.result-msg').html(
+                            `Congratulation! You got ${correctArr.length} correct number(s): 
+                            <br> ${correctArr}`
                         );
                     }
                 }
             });
-            
-            // 玩家重新選擇
-            console.log(ansArr); 
-            console.log(numsArr); 
         })
 
     </script>
 </head>
 <body>
     <h1>Lottery</h1>
-    <div class="div1">
+    <div class="reselect-section">
         <p>Your number</p>
         <button class="reselect">reselect</button>
     </div>
@@ -229,13 +236,13 @@
             <li>49</li>
         </ul>
     </div>
-    <div class="div2">
+    <div class="result-section">
         <button class="result">result</button>
-        <div class="div5"></div>
+        <div class="result-msg"></div>
 
-        <div class="div3">
+        <div class="reveal-section">
             <h3>Reveal Number:</h3>
-            <div class="div4"></div>
+            <div class="reveal-nums"></div>
         </div>
     </div>
 </body>
